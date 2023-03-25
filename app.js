@@ -2,11 +2,10 @@ import express from 'express';
 import morgan from  'morgan';
 import dotenv from 'dotenv';
 import pkg from 'pg';
-const {Client} = pkg;
-import path from 'path';
+const {Pool} = pkg;
 
 import { database } from './keys.js';
-const cadenaConeccion = 'postgresql//postgres@127.0.0.1:5433/postgres';
+const cadenaConeccion = "postgres//postgres:'Rjbm2310'@127.0.0.1:5432/music_always";
 
 // Inicializacion
 const app = express();
@@ -19,12 +18,19 @@ dotenv.config({path: './.env'});
 app.use(morgan('dev'));
 
 // Conectando
-const cliente = new Client ({database});
-const conecta = new Client ({cadenaConeccion});
+const cliente = new Pool ({
+    host: "localhost",
+    user: "postgres",
+    database:  "postgres",
+    password: "Rjbm2310",
+    port : 5432
+});
+
+const conecta = new Pool ({cadenaConeccion});
 
 const coneccion = async () => {
     try {
-        await cliente.connect
+        await cliente.connect()
         console.log('DB Conectada!')
     } catch (error) {
         console.log('Error: ', error);
@@ -35,7 +41,7 @@ coneccion();
 
 const segundaConect = async () => {
     try {
-        await conecta.connect
+        await conecta.connect()
         console.log('DB Conectada por string!')
     } catch (error) {
         console.log('Error: ', error);
@@ -49,13 +55,13 @@ app.get('/', (req, res) => {
         if(err){
             console.log(err)
         }else{
-            console.log('Respuesta ', resp);
+            console.log('Respuesta ', resp.rows[0]);
         }
-        cliente.end;
+        cliente.end();
     });
     conecta.query("SELECT NOW()", (err, resp) =>{
-        console.log(err, resp);
-        conecta.end;
+        console.log(err, resp.rows[0]);
+        conecta.end();
     });
     res.send('Corriendo')
 });
