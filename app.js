@@ -33,6 +33,7 @@ const coneccion = () => {
     } catch (error) {
         console.log('Error: ', error);
     }
+    
 } 
 
 coneccion();
@@ -54,7 +55,9 @@ app.get('/', (req, res) => {
             console.log(err)
         }else{
             console.log('Respuesta ', resp.rows[0]);
+            console.log('Respuesta ', resp.rows[0]);
         }
+        cliente.end();
         cliente.end();
     });
     conecta.query("SELECT NOW()", (err, resp) =>{
